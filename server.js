@@ -1,4 +1,12 @@
 import Express from "express";
+import { MongoClient } from "mongodb";
+
+const stringConexion = ""
+
+const client = MongoClient(stringConexion, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
 
 const app = Express();
 
