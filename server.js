@@ -13,3 +13,7 @@ app.get('/ventas', (req, res) =>{
     ];
     res.send(ventas);
 })
+
+app.listen(5000, () => {
+    console.log('escuchando puerto 5000')
+})
