@@ -3,7 +3,7 @@ import { MongoClient, ObjectId } from "mongodb";
 import Cors from "cors";
 
 
-const stringConexion = "mongodb+srv://Helenvps03:Helen-Heidy@testventas.egle1.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+const stringConexion = " Aqui va el script de la base de datos de Mongo"
 
 const client = new MongoClient(stringConexion, {
     useNewUrlParser: true,
