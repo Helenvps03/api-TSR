@@ -1,9 +1,11 @@
 import Express from 'express';
 import { MongoClient, ObjectId } from 'mongodb';
 import Cors from 'cors';
+import dotenv from 'dotenv';
 
+dotenv.config({ path: './.env'});
 
-const stringConexion = 'mongodb+srv://Bethsy:793722@proyectotsr.beekf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const stringConexion = process.env.DATABASE_URL;
 
 const client = new MongoClient(stringConexion, {useNewUrlParser: true, useUnifiedTopology: true,
 });

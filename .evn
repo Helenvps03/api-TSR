@@ -1,0 +1,2 @@
+PORT=5000
+DATABASE_URL = "mongodb+srv://Bethsy:<password>@proyectotsr.beekf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
