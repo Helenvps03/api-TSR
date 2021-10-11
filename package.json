@@ -1,16 +1,15 @@
 {
-  "name": "api",
+  "name": "api-products",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/Helenvps03/api-TSR.git",
-  "author": "Helen <helenvps13@gmail.com>",
+  "author": "Yadira Henao <yadira.henao@udea.edu.co>",
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon serverProducts.js"
   },
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongodb": "^4.1.3"
   },

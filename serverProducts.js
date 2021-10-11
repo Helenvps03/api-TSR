@@ -1,115 +1,115 @@
 import Express from 'express';
 import { MongoClient, ObjectId } from 'mongodb';
-import Cors from 'cors';
+//import Cors from 'cors';
 
+const stringConexion = 'mongodb+srv://Yadira:1037651286@proyectotsr.beekf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
-const stringConexion = 'mongodb+srv://Bethsy:793722@proyectotsr.beekf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
-
-const client = new MongoClient(stringConexion, {useNewUrlParser: true, useUnifiedTopology: true,
+const client = new MongoClient(stringConexion, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
-let conexion;
+let baseDeDatos;
 
 const app = Express();
-app.use(Cors());
+
 app.use(Express.json());
-app.get('/products', (req, res) => {
-    console.log('alguien hizo get en la ruta /products');
-    conexion
-    .collection('producto')
-    .find({})
-    .limit(100)
-    .toArray((err, result) => {
-        if(err) {
-            res.status(500).send('Error consultando los productos');
-        } else {
-            res.json(result);
-        }
-    });
-});
+//app.use(Cors());
 
-app.post('/products/new', (req, res) => {
-    console.log(req);
-    const datosProducto = req.body;
-    console.log('llaves: ', Object.keys(datosProducto));
-    try {
-        if (
-            Object.keys(datosProducto).includes('descripcion') && 
-            Object.keys(datosProducto).includes('valorUnitario') && 
-            Object.keys(datosProducto).includes('Estado')
-        ) {
-            conexion
-            .collection('producto')
-            .insertOne(datosProducto, (err, result) => {
-                if(err) {
-                    console.error(err);
-                    res.sendStatus(500);
-                } else {
-                    console.log(result);
-                    res.sendStatus(200);
-                }
-            });
-        } else {
-            res.sendStatus(500);
-        }
-    } catch {
-        res.sendStatus(500);
+app.get('/productos', (req, res) => {
+  console.log('alguien hizo get en la ruta /productos');
+  baseDeDatos.collection('NuevosProductos')
+  .find()
+  .limit(50)
+  .toArray((err, result) => {
+    if (err) {
+      res.status(500).send('Error consultando los productos');
+    } else {
+      res.json(result);
     }
-
+  });
 });
 
-app.patch('/products/actualize', (req, res) => {
+app.post('/productos/nuevo', (req, res) => {
+    console.log(req);
+    const datosProductos = req.body;
+    console.log('llaves: ', Object.keys(datosProductos));
+    try {
+      if (
+        Object.keys(datosProductos).includes('id') &&
+        Object.keys(datosProductos).includes('description') &&
+        Object.keys(datosProductos).includes('value') &&
+        Object.keys(datosProductos).includes('state') 
+      ) {
+        // implementar código para crear vehículo en la BD
+        baseDeDatos.collection('NuevosProductos').insertOne(datosProductos, (err, result) => {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+              } else {
+                console.log(result);
+                res.sendStatus(200);
+              }
+            });
+        res.sendStatus(200);
+      } else {
+        res.sendStatus(500);
+      }
+    } catch {
+      res.sendStatus(500);
+    }
+  }); 
+
+app.patch('/productos/editar', (req, res) => {
     const edicion = req.body;
     console.log(edicion);
-    const filtroProductos = {_id: new ObjectId(edicion.id)};
+    const filtroProducto = { _id: new ObjectId(edicion.id) };
     delete edicion.id;
     const operacion = {
-        $set:edicion,
+      $set: edicion,
     };
-    conexion
-    .collection('producto')
-    .findOneAndUpdate(
-        filtroProductos, 
-        operacion, 
-        {upsert: true, returnOriginal: true}, 
+    baseDeDatos
+      .collection('NuevosProductos')
+      .findOneAndUpdate(
+        filtroProducto,
+        operacion,
+        { upsert: true, returnOriginal: true },
         (err, result) => {
-            if (err) {
-                console.error('error actualizando el producto: ', err);
-                res.sendStatus(500);
-            } else{
-                console.log('actualizado con exito');
-                res.sendStatus(200);
-            }
-        }
-        );
-})
-
-app.delete('/products/delete', (req,res) => {
-    const filtroProductos = { _id: new ObjectId(req.body.id)};
-    conexion
-    .collection('producto')
-    .deleteOne(filtroProductos, (err,result) => {
-        if (err) {
-            console.error(err);
+          if (err) {
+            console.error('error actualizando el producto: ', err);
             res.sendStatus(500);
-        } else {
+          } else {
+            console.log('actualizado con exito');
             res.sendStatus(200);
+          }
         }
-    });
+      );
 });
 
+app.delete('/productos/eliminar', (req, res) => {
+    const filtroProducto = { _id: new ObjectId(req.body.id) };
+    baseDeDatos.collection('NuevosProductos').deleteOne(filtroProducto, (err, result) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.sendStatus(200);
+      }
+    });
+  });
+  
 const main = () => {
     client.connect((err, db) => {
-        if(err) {
-            console.error('error conectando a la base de datos');
-                return 'error';
-        }
-        conexion = db.db('proyecto')
-        console.log('conexión exitosa')
-        return app.listen(5000, () => {
-            console.log('escuchando puerto 5000');
-});
-});
-};
-
-main();
+      if (err) {
+        console.error('Error conectando a la base de datos');
+        return 'error';
+      }
+      baseDeDatos = db.db('productos');
+      console.log('baseDeDatos exitosa');
+      return app.listen(5000, () => {
+        console.log('escuchando puerto 5000');
+      });
+    });
+  };
+  
+  main();
